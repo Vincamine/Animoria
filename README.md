@@ -1,7 +1,5 @@
 # Animoria
 
-## Wildlife Discovery Application
-
 > **Note:** This repository is currently private as the application is being used for competition purposes. The complete source code will be published in April 2025. For collaboration inquiries or early access requests, please contact me directly.
 
 ## About the App
