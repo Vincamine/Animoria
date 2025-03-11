@@ -18,11 +18,11 @@ Animoria is an interactive wildlife discovery application that connects people w
 8. Visual interaction options for both individual species and overall collection with custom animations
 
 ## Design Elements and Features
-• **Logo**: Integrates "a" (animal) and "m" (memory), with the "m" stylized as a heart. The colors are inspired by nature. The gradients and layered strokes create a sense of depth, hinting at the AR experience in the app.
-• Inspired by Karl Jaspers' philosophy: "One tree moves another tree, one soul awakens another soul"
-• Adaptive rotation support for all screen orientations with custom layout constraints
-• Dark/Light mode compatibility using dynamic asset catalogs and semantic colors
-• Thoughtfully selected color palette for optimal user experience with accessibility considerations
+- **Logo**: Integrates "a" (animal) and "m" (memory), with the "m" stylized as a heart. The colors are inspired by nature. The gradients and layered strokes create a sense of depth, hinting at the AR experience in the app.
+- Inspired by Karl Jaspers' philosophy: "One tree moves another tree, one soul awakens another soul"
+- Adaptive rotation support for all screen orientations with custom layout constraints
+- Dark/Light mode compatibility using dynamic asset catalogs and semantic colors
+- Thoughtfully selected color palette for optimal user experience with accessibility considerations
 
 ## Development Environment
 - Xcode 16.2
