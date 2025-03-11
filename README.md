@@ -25,10 +25,10 @@ Animoria is an interactive wildlife discovery application that connects people w
 • Thoughtfully selected color palette for optimal user experience with accessibility considerations
 
 ## Development Environment
-• Xcode 16.2
+- Xcode 16.2
 • iOS 17
 • Swift 6.0 (5.9)
-• Tested on:
+- Tested on:
   - Simulators: iPhone 13, iPhone 14, iPhone 16 Pro, My Mac
   - Physical devices: iPhone 13 Pro, iPhone 16, iPad Air
 
