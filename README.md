@@ -38,7 +38,7 @@ The application successfully addresses several technical challenges:
 - Designing an intuitive user journey that encourages environmental engagement
 
 ## Credits
-- **Design & Development**: Wenxue Fang\n
+- **Design & Development**: Wenxue Fang
 - **Map**: OpenStreetMap [OpenStreetMap® is open data, licensed under the Open Data Commons Open Database License (ODbL) by the OpenStreetMap Foundation (OSMF).]
 - All images, photographs, and logo designs are original creations owned by the developer.
 
