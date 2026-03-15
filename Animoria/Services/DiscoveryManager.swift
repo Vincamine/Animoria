@@ -105,6 +105,15 @@ class DiscoveryManager: ObservableObject {
             try context.save()
             discoveries[speciesId] = discovery
             print("✅ Discovered species: \(speciesId)")
+            
+            // Check achievements
+            Task { @MainActor in
+                AchievementManager.shared.checkAchievements(
+                    discoveryManager: self,
+                    dataManager: DataManager.shared
+                )
+            }
+            
             completion(true)
         } catch {
             print("Failed to save discovery: \(error.localizedDescription)")

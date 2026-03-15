@@ -13,9 +13,12 @@ struct MainTabView: View {
     @StateObject private var dataManager = DataManager.shared
     @StateObject private var locationManager = LocationManager.shared
     @StateObject private var notificationManager = NotificationManager.shared
+    @StateObject private var achievementManager = AchievementManager.shared
+    @State private var showAchievementBanner = false
     
     var body: some View {
-        TabView(selection: $selectedTab) {
+        ZStack {
+            TabView(selection: $selectedTab) {
             // Map Tab
             MapView()
                 .tabItem {
@@ -43,9 +46,36 @@ struct MainTabView: View {
                     Label("Profile", systemImage: "person.fill")
                 }
                 .tag(3)
+            }
+            .onAppear {
+                setupManagers()
+            }
+            
+            // Achievement Unlock Banner
+            if let achievement = achievementManager.recentlyUnlocked, showAchievementBanner {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        showAchievementBanner = false
+                    }
+                
+                AchievementUnlockBanner(
+                    achievement: achievement,
+                    isPresented: $showAchievementBanner
+                )
+                .transition(.scale.combined(with: .opacity))
+            }
         }
-        .onAppear {
-            setupManagers()
+        .onChange(of: achievementManager.recentlyUnlocked) { _, newValue in
+            if newValue != nil {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    showAchievementBanner = true
+                }
+            } else {
+                withAnimation {
+                    showAchievementBanner = false
+                }
+            }
         }
     }
     
@@ -462,6 +492,8 @@ struct ProfileView: View {
     @StateObject private var notificationManager = NotificationManager.shared
     @StateObject private var discoveryManager = DiscoveryManager.shared
     @StateObject private var dataManager = DataManager.shared
+    @StateObject private var achievementManager = AchievementManager.shared
+    @State private var showAchievements = false
     
     var visitedLocations: Int {
         dataManager.locations.filter { location in
@@ -487,6 +519,31 @@ struct ProfileView: View {
                         Text("\(visitedLocations)/\(dataManager.locations.count)")
                             .foregroundColor(visitedLocations > 0 ? .blue : .secondary)
                             .fontWeight(.medium)
+                    }
+                }
+                
+                Section("Achievements") {
+                    Button(action: { showAchievements = true }) {
+                        HStack {
+                            Label("View Achievements", systemImage: "trophy.fill")
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text("\(achievementManager.unlockedAchievements().count)/\(achievementManager.achievements.count)")
+                                    .font(.headline)
+                                    .foregroundColor(.green)
+                                
+                                Text("\(achievementManager.totalPoints) pts")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
                 
@@ -516,6 +573,9 @@ struct ProfileView: View {
                 }
             }
             .navigationTitle("Profile")
+            .sheet(isPresented: $showAchievements) {
+                AchievementsView()
+            }
         }
     }
     
