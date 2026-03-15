@@ -1,0 +1,107 @@
+[
+  {
+    "id": "first-discovery",
+    "name": "First Discovery",
+    "description": "Discover your first species in the wild",
+    "iconName": "star.fill",
+    "condition": {
+      "type": "firstDiscovery"
+    },
+    "points": 10
+  },
+  {
+    "id": "photo-enthusiast",
+    "name": "Photo Enthusiast",
+    "description": "Capture photos of 5 different species",
+    "iconName": "camera.fill",
+    "condition": {
+      "type": "photoCount",
+      "value": 5
+    },
+    "points": 25
+  },
+  {
+    "id": "explorer",
+    "name": "Explorer",
+    "description": "Visit all available locations",
+    "iconName": "map.fill",
+    "condition": {
+      "type": "explorer"
+    },
+    "points": 50
+  },
+  {
+    "id": "collector",
+    "name": "Collector",
+    "description": "Discover all species in Animoria",
+    "iconName": "star.circle.fill",
+    "condition": {
+      "type": "collector"
+    },
+    "points": 100
+  },
+  {
+    "id": "channel-islands-complete",
+    "name": "Channel Islands Master",
+    "description": "Discover all species at Channel Islands",
+    "iconName": "checkmark.seal.fill",
+    "condition": {
+      "type": "completeLocation",
+      "locationId": "channel-islands"
+    },
+    "points": 30
+  },
+  {
+    "id": "san-mateo-complete",
+    "name": "San Mateo Master",
+    "description": "Discover all species at San Mateo Campground",
+    "iconName": "checkmark.seal.fill",
+    "condition": {
+      "type": "completeLocation",
+      "locationId": "san-mateo-campground"
+    },
+    "points": 30
+  },
+  {
+    "id": "early-bird",
+    "name": "Early Bird",
+    "description": "Make a discovery before 8:00 AM",
+    "iconName": "sunrise.fill",
+    "condition": {
+      "type": "earlyBird"
+    },
+    "points": 15
+  },
+  {
+    "id": "night-owl",
+    "name": "Night Owl",
+    "description": "Make a discovery after 10:00 PM",
+    "iconName": "moon.stars.fill",
+    "condition": {
+      "type": "nightOwl"
+    },
+    "points": 15
+  },
+  {
+    "id": "ar-explorer",
+    "name": "AR Explorer",
+    "description": "View 3 species in augmented reality",
+    "iconName": "arkit",
+    "condition": {
+      "type": "arViewCount",
+      "value": 3
+    },
+    "points": 20
+  },
+  {
+    "id": "dedicated-discoverer",
+    "name": "Dedicated Discoverer",
+    "description": "Discover 5 different species",
+    "iconName": "leaf.fill",
+    "condition": {
+      "type": "discoverCount",
+      "value": 5
+    },
+    "points": 20
+  }
+]

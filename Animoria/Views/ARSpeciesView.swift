@@ -13,6 +13,7 @@ struct ARSpeciesView: View {
     let species: Species
     @Environment(\.dismiss) var dismiss
     @StateObject private var arViewModel = ARViewModel()
+    @StateObject private var achievementManager = AchievementManager.shared
     
     @State private var showInstructions = true
     @State private var showControls = true
@@ -68,6 +69,16 @@ struct ARSpeciesView: View {
             }
         }
         .statusBar(hidden: true)
+        .onAppear {
+            // Record AR view for achievements
+            achievementManager.recordARView()
+            
+            // Check achievements
+            achievementManager.checkAchievements(
+                discoveryManager: DiscoveryManager.shared,
+                dataManager: DataManager.shared
+            )
+        }
     }
     
     // MARK: - Instructions View

@@ -96,6 +96,27 @@ class NotificationManager: ObservableObject {
         try? await UNUserNotificationCenter.current().add(request)
     }
     
+    // MARK: - Achievement Notification
+    
+    func sendAchievementNotification(achievement: Achievement) async {
+        guard isAuthorized else { return }
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Achievement Unlocked! 🏆"
+        content.body = "\(achievement.name) - \(achievement.description)"
+        content.sound = .default
+        content.categoryIdentifier = "ACHIEVEMENT"
+        content.userInfo = ["achievementId": achievement.id]
+        
+        let request = UNNotificationRequest(
+            identifier: "achievement-\(achievement.id)-\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: nil
+        )
+        
+        try? await UNUserNotificationCenter.current().add(request)
+    }
+    
     // MARK: - Clear Notifications
     
     func clearAllNotifications() {
