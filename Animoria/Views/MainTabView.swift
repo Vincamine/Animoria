@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ARKit
 
 struct MainTabView: View {
     @State private var selectedTab = 0
@@ -285,6 +286,7 @@ struct SpeciesDetailSheet: View {
     @StateObject private var discoveryManager = DiscoveryManager.shared
     @Environment(\.dismiss) var dismiss
     @State private var showPhotoGallery = false
+    @State private var showARView = false
     
     var discovery: SpeciesDiscovery? {
         discoveryManager.discovery(for: species.id)
@@ -292,6 +294,10 @@ struct SpeciesDetailSheet: View {
     
     var hasPhoto: Bool {
         discovery?.photoData != nil
+    }
+    
+    var isARAvailable: Bool {
+        ARWorldTrackingConfiguration.isSupported
     }
     
     var body: some View {
@@ -371,6 +377,41 @@ struct SpeciesDetailSheet: View {
                         
                         Divider()
                         
+                        // AR View button
+                        if isARAvailable {
+                            Button(action: { showARView = true }) {
+                                HStack {
+                                    Image(systemName: "arkit")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("View in AR")
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                        Text("See \(species.name) in your space")
+                                            .font(.caption)
+                                            .foregroundColor(.white.opacity(0.8))
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.white.opacity(0.6))
+                                }
+                                .padding()
+                                .background(
+                                    LinearGradient(
+                                        colors: [.blue, .purple],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        
                         DetailSection(title: "Appearance", content: species.appearance)
                         DetailSection(title: "Habitat", content: species.habitat)
                         DetailSection(title: "Feeding", content: species.feeding)
@@ -390,6 +431,9 @@ struct SpeciesDetailSheet: View {
             }
             .fullScreenCover(isPresented: $showPhotoGallery) {
                 PhotoGalleryView(species: species)
+            }
+            .fullScreenCover(isPresented: $showARView) {
+                ARSpeciesView(species: species)
             }
         }
     }
