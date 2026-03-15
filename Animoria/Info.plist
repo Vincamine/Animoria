@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Location Permissions -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Animoria uses your location to show nearby wildlife locations and calculate distances to parks.</string>
+    
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Animoria uses your location to notify you when you arrive at wildlife areas so you can discover local species.</string>
+    
+    <!-- Camera (for AR and species photos) -->
+    <key>NSCameraUsageDescription</key>
+    <string>Animoria uses the camera to capture photos of wildlife you discover and for AR species viewing.</string>
+    
+    <!-- Photo Library -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Animoria saves your wildlife photos to your photo library.</string>
+    
+    <!-- Background Modes for Geofencing -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>location</string>
+    </array>
+</dict>
+</plist>

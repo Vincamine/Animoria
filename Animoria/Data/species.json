@@ -1,0 +1,86 @@
+[
+  {
+    "id": "island-fox",
+    "locationId": "channel-islands",
+    "name": "Island Fox",
+    "scientificName": "Urocyon littoralis",
+    "appearance": "A small fox with a reddish-gray coat, black-tipped tail, and large ears.",
+    "habitat": "Only found on six of the eight Channel Islands off the coast of Southern California.",
+    "feeding": "Omnivorous, feeding on insects, fruits, birds, and small mammals.",
+    "reproduction": "Breeds in early spring, with 2-3 pups per litter.",
+    "quickFacts": "Once near gone, now strong and free, island fox, survivor of the sea.",
+    "imageName": "island_fox"
+  },
+  {
+    "id": "island-deer-mouse",
+    "locationId": "channel-islands",
+    "name": "Island Deer Mouse",
+    "scientificName": "Peromyscus maniculatus",
+    "appearance": "A small, brownish mouse with large eyes and ears, adapted to island life.",
+    "habitat": "Found on all eight Channel Islands, with each island hosting a unique subspecies.",
+    "feeding": "Omnivorous, feeding on seeds, fruits, insects, and occasionally carrion.",
+    "reproduction": "Breeds year-round, with females producing multiple litters of 2-5 pups.",
+    "quickFacts": "Tiny traveler, swift and sly, island hunter, watchful eye.",
+    "imageName": "island_deer_mouse"
+  },
+  {
+    "id": "gopher-snake",
+    "locationId": "channel-islands",
+    "name": "Gopher Snake",
+    "scientificName": "Pituophis catenifer",
+    "appearance": "A non-venomous snake with yellowish-brown scales and dark blotches along its body.",
+    "habitat": "Found in a variety of habitats, including grasslands, chaparral, and coastal dunes.",
+    "feeding": "Carnivorous, feeding on rodents, birds, eggs, and lizards.",
+    "reproduction": "Lays eggs in the summer, with hatchlings emerging in early fall.",
+    "quickFacts": "Hisses loud, but strikes no fear; a harmless guardian living near.",
+    "imageName": "gopher_snake"
+  },
+  {
+    "id": "island-night-lizard",
+    "locationId": "channel-islands",
+    "name": "Island Night Lizard",
+    "scientificName": "Xantusia riversiana",
+    "appearance": "A small, brownish-gray lizard with a flat body and granular scales.",
+    "habitat": "Lives in rock crevices, under logs, and in dense vegetation on the Channel Islands.",
+    "feeding": "Omnivorous, feeding on insects, spiders, and plant matter.",
+    "reproduction": "Gives birth to live young rather than laying eggs, with 1-3 offspring per year.",
+    "quickFacts": "Hidden by day, so still, so shy; nightfall wakes its watchful eye.",
+    "imageName": "island_night_lizard"
+  },
+  {
+    "id": "mule-deer",
+    "locationId": "san-mateo-campground",
+    "name": "Mule Deer",
+    "scientificName": "Odocoileus hemionus",
+    "appearance": "Medium-sized deer with large mule-like ears, a black-tipped tail, and a tan to grayish-brown coat.",
+    "habitat": "Found in diverse habitats including forests, chaparral, and grasslands throughout western North America.",
+    "feeding": "Herbivorous, browsing on shrubs, leaves, twigs, and seasonal grasses.",
+    "reproduction": "Breeds in fall, with does giving birth to 1-2 fawns in late spring.",
+    "quickFacts": "Named for their large ears, mule deer can bound up to 8 feet in a single leap.",
+    "imageName": "mule_deer"
+  },
+  {
+    "id": "california-quail",
+    "locationId": "san-mateo-campground",
+    "name": "California Quail",
+    "scientificName": "Callipepla californica",
+    "appearance": "A plump, gray-brown bird with a distinctive black plume curving forward from the crown.",
+    "habitat": "Found in shrubby areas, oak woodlands, and suburban gardens throughout California.",
+    "feeding": "Omnivorous, eating seeds, leaves, berries, and insects.",
+    "reproduction": "Nests on the ground, laying 12-16 eggs that hatch in about 23 days.",
+    "quickFacts": "California's state bird, known for their 'chi-ca-go' call and covey behavior.",
+    "imageName": "california_quail"
+  },
+  {
+    "id": "western-fence-lizard",
+    "locationId": "san-mateo-campground",
+    "name": "Western Fence Lizard",
+    "scientificName": "Sceloporus occidentalis",
+    "appearance": "A small, spiny lizard with brown or gray scales and bright blue patches on the belly and throat.",
+    "habitat": "Common on fences, rocks, and logs in open woodlands and grasslands.",
+    "feeding": "Insectivorous, eating beetles, ants, spiders, and other small invertebrates.",
+    "reproduction": "Females lay 1-3 clutches of 3-17 eggs per season in loose soil.",
+    "quickFacts": "Their blood contains a protein that kills Lyme disease bacteria in ticks!",
+    "imageName": "western_fence_lizard"
+  }
+]

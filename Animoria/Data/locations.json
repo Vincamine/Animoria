@@ -1,0 +1,28 @@
+[
+  {
+    "id": "channel-islands",
+    "name": "Channel Islands",
+    "subtitle": "Ventura, California",
+    "imageName": "ChannelIslandsLight",
+    "colorHex": "#D7F2FF",
+    "coordinate": {
+      "latitude": 34.0069,
+      "longitude": -119.7785
+    },
+    "radius": 5000,
+    "speciesIds": ["island-fox", "island-deer-mouse", "gopher-snake", "island-night-lizard"]
+  },
+  {
+    "id": "san-mateo-campground",
+    "name": "San Mateo Campground",
+    "subtitle": "San Diego County, California",
+    "imageName": "SanMateoCampgroundLight",
+    "colorHex": "#E4FFEC",
+    "coordinate": {
+      "latitude": 33.3856,
+      "longitude": -117.5931
+    },
+    "radius": 2000,
+    "speciesIds": ["mule-deer", "california-quail", "western-fence-lizard"]
+  }
+]

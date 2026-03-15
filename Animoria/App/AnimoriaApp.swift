@@ -2,17 +2,16 @@
 //  AnimoriaApp.swift
 //  Animoria
 //
-//  Created by Wenxue Fang on 2/16/25.
+//  Main app entry point - Phase 1 refactored
 //
 
 import SwiftUI
 
 @main
-struct MyApp: App {
+struct AnimoriaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
         }
     }
 }
-
