@@ -284,9 +284,14 @@ struct SpeciesDetailSheet: View {
     let species: Species
     @StateObject private var discoveryManager = DiscoveryManager.shared
     @Environment(\.dismiss) var dismiss
+    @State private var showPhotoGallery = false
     
     var discovery: SpeciesDiscovery? {
         discoveryManager.discovery(for: species.id)
+    }
+    
+    var hasPhoto: Bool {
+        discovery?.photoData != nil
     }
     
     var body: some View {
@@ -296,12 +301,34 @@ struct SpeciesDetailSheet: View {
                     // Photo or species image
                     if let discovery = discovery, let photoData = discovery.photoData,
                        let uiImage = UIImage(data: photoData) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 300)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .padding(.horizontal)
+                        Button(action: { showPhotoGallery = true }) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: 300)
+                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(Color.blue, lineWidth: 2)
+                                )
+                                .overlay(
+                                    VStack {
+                                        Spacer()
+                                        HStack {
+                                            Spacer()
+                                            Image(systemName: "arrow.up.left.and.arrow.down.right")
+                                                .font(.title2)
+                                                .foregroundColor(.white)
+                                                .padding(12)
+                                                .background(Color.black.opacity(0.6))
+                                                .clipShape(Circle())
+                                                .padding(12)
+                                        }
+                                    }
+                                )
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(.plain)
                     } else if let image = UIImage(named: species.imageName) {
                         Image(uiImage: image)
                             .resizable()
@@ -360,6 +387,9 @@ struct SpeciesDetailSheet: View {
                         dismiss()
                     }
                 }
+            }
+            .fullScreenCover(isPresented: $showPhotoGallery) {
+                PhotoGalleryView(species: species)
             }
         }
     }
