@@ -155,10 +155,12 @@ struct LocationCardView: View {
     }
 }
 
-// MARK: - Collection View (Placeholder)
+// MARK: - Collection View
 
 struct CollectionView: View {
     @StateObject private var dataManager = DataManager.shared
+    @StateObject private var discoveryManager = DiscoveryManager.shared
+    @State private var selectedSpecies: Species?
     
     var body: some View {
         NavigationStack {
@@ -169,30 +171,12 @@ struct CollectionView: View {
                     GridItem(.flexible())
                 ], spacing: 16) {
                     ForEach(dataManager.species) { species in
-                        VStack {
-                            if let image = UIImage(named: species.imageName) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 100, height: 100)
-                                    .clipShape(Circle())
-                                    .grayscale(1.0) // Greyed out until discovered
-                                    .opacity(0.5)
-                            } else {
-                                Circle()
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(width: 100, height: 100)
-                                    .overlay(
-                                        Image(systemName: "questionmark")
-                                            .foregroundColor(.gray)
-                                    )
+                        SpeciesCollectionCard(species: species)
+                            .onTapGesture {
+                                if discoveryManager.isDiscovered(species.id) {
+                                    selectedSpecies = species
+                                }
                             }
-                            
-                            Text(species.name)
-                                .font(.caption)
-                                .lineLimit(1)
-                                .foregroundColor(.secondary)
-                        }
                     }
                 }
                 .padding()
@@ -200,37 +184,235 @@ struct CollectionView: View {
             .navigationTitle("Collection")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Text("0/\(dataManager.species.count)")
+                    Text("\(discoveryManager.totalDiscoveries)/\(dataManager.species.count)")
                         .font(.headline)
                         .foregroundColor(.secondary)
+                }
+            }
+            .sheet(item: $selectedSpecies) { species in
+                SpeciesDetailSheet(species: species)
+            }
+        }
+    }
+}
+
+// MARK: - Species Collection Card
+
+struct SpeciesCollectionCard: View {
+    let species: Species
+    @StateObject private var discoveryManager = DiscoveryManager.shared
+    
+    var isDiscovered: Bool {
+        discoveryManager.isDiscovered(species.id)
+    }
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            ZStack {
+                if let image = UIImage(named: species.imageName) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .grayscale(isDiscovered ? 0 : 1.0)
+                        .opacity(isDiscovered ? 1.0 : 0.4)
+                } else {
+                    Circle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 100, height: 100)
+                        .overlay(
+                            Image(systemName: isDiscovered ? "checkmark.circle.fill" : "lock.fill")
+                                .font(.title)
+                                .foregroundColor(isDiscovered ? .green : .gray)
+                        )
+                }
+                
+                // Discovered badge
+                if isDiscovered {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Circle()
+                                .fill(.green)
+                                .frame(width: 24, height: 24)
+                                .overlay(
+                                    Image(systemName: "checkmark")
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                )
+                        }
+                    }
+                    .frame(width: 100, height: 100)
+                }
+                
+                // Photo indicator
+                if let discovery = discoveryManager.discovery(for: species.id),
+                   discovery.photoData != nil {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Circle()
+                                .fill(.blue)
+                                .frame(width: 24, height: 24)
+                                .overlay(
+                                    Image(systemName: "camera.fill")
+                                        .font(.caption2)
+                                        .foregroundColor(.white)
+                                )
+                            Spacer()
+                        }
+                    }
+                    .frame(width: 100, height: 100)
+                }
+            }
+            
+            Text(isDiscovered ? species.name : "???")
+                .font(.caption)
+                .lineLimit(1)
+                .foregroundColor(isDiscovered ? .primary : .secondary)
+                .fontWeight(isDiscovered ? .medium : .regular)
+        }
+    }
+}
+
+// MARK: - Species Detail Sheet
+
+struct SpeciesDetailSheet: View {
+    let species: Species
+    @StateObject private var discoveryManager = DiscoveryManager.shared
+    @Environment(\.dismiss) var dismiss
+    
+    var discovery: SpeciesDiscovery? {
+        discoveryManager.discovery(for: species.id)
+    }
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Photo or species image
+                    if let discovery = discovery, let photoData = discovery.photoData,
+                       let uiImage = UIImage(data: photoData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 300)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .padding(.horizontal)
+                    } else if let image = UIImage(named: species.imageName) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 250)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .padding(.horizontal)
+                    }
+                    
+                    // Species info
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(species.name)
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                
+                                Text(species.scientificName)
+                                    .font(.title3)
+                                    .italic()
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            if let discovery = discovery {
+                                VStack(alignment: .trailing) {
+                                    Image(systemName: "checkmark.seal.fill")
+                                        .font(.title)
+                                        .foregroundColor(.green)
+                                    Text("Discovered")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text(discovery.discoveredAt.formatted(date: .abbreviated, time: .omitted))
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        
+                        Divider()
+                        
+                        DetailSection(title: "Appearance", content: species.appearance)
+                        DetailSection(title: "Habitat", content: species.habitat)
+                        DetailSection(title: "Feeding", content: species.feeding)
+                        DetailSection(title: "Reproduction", content: species.reproduction)
+                        DetailSection(title: "Quick Facts", content: species.quickFacts)
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
                 }
             }
         }
     }
 }
 
-// MARK: - Profile View (Placeholder)
+struct DetailSection: View {
+    let title: String
+    let content: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.primary)
+            Text(content)
+                .font(.body)
+                .foregroundColor(.secondary)
+        }
+    }
+}
+
+// MARK: - Profile View
 
 struct ProfileView: View {
     @StateObject private var locationManager = LocationManager.shared
     @StateObject private var notificationManager = NotificationManager.shared
+    @StateObject private var discoveryManager = DiscoveryManager.shared
+    @StateObject private var dataManager = DataManager.shared
+    
+    var visitedLocations: Int {
+        dataManager.locations.filter { location in
+            discoveryManager.discoveredCount(for: location.id, dataManager: dataManager) > 0
+        }.count
+    }
     
     var body: some View {
         NavigationStack {
             List {
                 Section("Stats") {
                     HStack {
-                        Label("Species Found", systemImage: "pawprint.fill")
+                        Label("Species Discovered", systemImage: "pawprint.fill")
                         Spacer()
-                        Text("0")
-                            .foregroundColor(.secondary)
+                        Text("\(discoveryManager.totalDiscoveries)/\(dataManager.species.count)")
+                            .foregroundColor(discoveryManager.totalDiscoveries > 0 ? .green : .secondary)
+                            .fontWeight(.medium)
                     }
                     
                     HStack {
                         Label("Locations Visited", systemImage: "mappin.circle.fill")
                         Spacer()
-                        Text("0")
-                            .foregroundColor(.secondary)
+                        Text("\(visitedLocations)/\(dataManager.locations.count)")
+                            .foregroundColor(visitedLocations > 0 ? .blue : .secondary)
+                            .fontWeight(.medium)
                     }
                 }
                 
