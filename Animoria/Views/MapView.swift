@@ -264,6 +264,21 @@ struct LocationSheetView: View {
     let location: Location
     @Environment(\.dismiss) var dismiss
     @StateObject private var dataManager = DataManager.shared
+    @StateObject private var discoveryManager = DiscoveryManager.shared
+    @StateObject private var locationManager = LocationManager.shared
+    @State private var showingDiscovery: Species?
+    
+    var isOnSite: Bool {
+        location.isUserOnSite
+    }
+    
+    var discoveredCount: Int {
+        discoveryManager.discoveredCount(for: location.id, dataManager: dataManager)
+    }
+    
+    var totalCount: Int {
+        discoveryManager.totalCount(for: location.id, dataManager: dataManager)
+    }
     
     var body: some View {
         NavigationStack {
@@ -281,27 +296,70 @@ struct LocationSheetView: View {
                     
                     // Location info
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(location.name)
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
+                        HStack {
+                            Text(location.name)
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                            
+                            Spacer()
+                            
+                            if isOnSite {
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Image(systemName: "location.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.green)
+                                    Text("ON SITE")
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.green)
+                                }
+                            }
+                        }
                         
                         Text(location.subtitle)
                             .font(.title3)
                             .foregroundColor(.secondary)
+                        
+                        // Discovery progress
+                        HStack {
+                            Label("\(discoveredCount)/\(totalCount) discovered", systemImage: "checkmark.circle.fill")
+                                .font(.subheadline)
+                                .foregroundColor(discoveredCount > 0 ? .green : .secondary)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     
+                    // On-site message
+                    if isOnSite {
+                        HStack {
+                            Image(systemName: "sparkles")
+                                .foregroundColor(.green)
+                            Text("You're here! Tap a species to discover it.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .background(Color.green.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .padding(.horizontal)
+                    }
+                    
                     // Species list
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Species to Discover")
+                        Text("Species at This Location")
                             .font(.headline)
                             .padding(.horizontal)
                         
                         let species = dataManager.species(for: location.id)
                         ForEach(species) { species in
-                            SpeciesRowView(species: species)
+                            SpeciesLocationRowView(species: species, location: location, isOnSite: isOnSite)
                                 .padding(.horizontal)
+                                .onTapGesture {
+                                    if isOnSite && !discoveryManager.isDiscovered(species.id) {
+                                        showingDiscovery = species
+                                    }
+                                }
                         }
                     }
                     
@@ -316,12 +374,22 @@ struct LocationSheetView: View {
                     }
                 }
             }
+            .fullScreenCover(item: $showingDiscovery) { species in
+                DiscoveryView(species: species, location: location)
+            }
         }
     }
 }
 
-struct SpeciesRowView: View {
+struct SpeciesLocationRowView: View {
     let species: Species
+    let location: Location
+    let isOnSite: Bool
+    @StateObject private var discoveryManager = DiscoveryManager.shared
+    
+    var isDiscovered: Bool {
+        discoveryManager.isDiscovered(species.id)
+    }
     
     var body: some View {
         HStack(spacing: 12) {
@@ -332,32 +400,77 @@ struct SpeciesRowView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
+                    .grayscale(isDiscovered ? 0 : 1.0)
+                    .opacity(isDiscovered ? 1.0 : 0.6)
+                    .overlay(
+                        Circle()
+                            .stroke(isDiscovered ? Color.green : Color.clear, lineWidth: 2)
+                    )
             } else {
                 Circle()
                     .fill(Color.gray.opacity(0.2))
                     .frame(width: 60, height: 60)
                     .overlay(
-                        Image(systemName: "pawprint.fill")
-                            .foregroundColor(.gray)
+                        Image(systemName: isDiscovered ? "checkmark.circle.fill" : "pawprint.fill")
+                            .foregroundColor(isDiscovered ? .green : .gray)
                     )
             }
             
             VStack(alignment: .leading, spacing: 2) {
-                Text(species.name)
-                    .font(.headline)
-                Text(species.scientificName)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .italic()
+                HStack {
+                    Text(isDiscovered ? species.name : "???")
+                        .font(.headline)
+                        .foregroundColor(isDiscovered ? .primary : .secondary)
+                    
+                    if isDiscovered {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.caption)
+                            .foregroundColor(.green)
+                    }
+                }
+                
+                if isDiscovered {
+                    Text(species.scientificName)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .italic()
+                } else {
+                    Text("Not yet discovered")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
             
             Spacer()
             
-            Image(systemName: "chevron.right")
-                .foregroundColor(.secondary)
+            // Discover button or status
+            if !isDiscovered && isOnSite {
+                Button(action: {}) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "sparkles")
+                        Text("Discover")
+                    }
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.green)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            } else if isDiscovered {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title3)
+                    .foregroundColor(.green)
+            } else {
+                Image(systemName: "lock.fill")
+                    .font(.title3)
+                    .foregroundColor(.gray.opacity(0.5))
+            }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(isDiscovered ? Color(.systemBackground) : Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 5)
     }
